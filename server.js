@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 
 const app = express();
@@ -7,7 +9,16 @@ app.get("/", (req, res) => {
         message: "Uptime Monitor API is running"
     });
 });
+const connectDB = require("./config/db");
 
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
-});
+console.log(connectDB);
+
+connectDB()
+    .then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server running on port ${process.env.PORT}`);
+        });
+    })
+    .catch((err) => {
+        console.error(err);
+    });
