@@ -1,0 +1,35 @@
+const express = require("express");
+const router = express.Router();
+
+const Site = require("../models/Site");
+
+router.post("/", async (req, res) => {
+    const { name, url } = req.body;
+
+    if (!name || !url) {
+        return res.status(400).json({
+            error: "name and url are required",
+        });
+    }
+
+    try {
+        const site = await Site.create({
+            name,
+            url,
+        });
+
+        res.status(201).json(site);
+    } catch (err) {
+        if (err.code === 11000) {
+            return res.status(409).json({
+                error: "This URL is already being monitored",
+            });
+        }
+
+        res.status(500).json({
+            error: "Internal Server Error",
+        });
+    }
+});
+
+module.exports = router;

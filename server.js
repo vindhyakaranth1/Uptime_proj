@@ -1,15 +1,19 @@
 require("dotenv").config();
 
 const express = require("express");
+const connectDB = require("./config/db");
+const sitesRouter = require("./routes/sites");
 
 const app = express();
+app.use(express.json());
+app.use("/api/sites", sitesRouter);
 
 app.get("/", (req, res) => {
     res.json({
         message: "Uptime Monitor API is running"
     });
 });
-const connectDB = require("./config/db");
+
 
 console.log(connectDB);
 
