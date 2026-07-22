@@ -4,8 +4,11 @@ const router = express.Router();
 const Site = require("../models/Site");
 
 // Create a new site
-router.post("/", async (req, res) => {
-    const { name, url } = req.body;
+
+router.post("/", async (req, res, next) => {
+
+    const name = req.body.name?.trim();
+    const url = req.body.url?.trim();
 
     if (!name || !url) {
         return res.status(400).json({
@@ -14,42 +17,44 @@ router.post("/", async (req, res) => {
     }
 
     try {
+
         const site = await Site.create({
             name,
             url,
         });
 
         res.status(201).json(site);
+
     } catch (err) {
+
         if (err.code === 11000) {
             return res.status(409).json({
                 error: "This URL is already being monitored",
             });
         }
 
-        res.status(500).json({
-            error: "Internal Server Error",
-        });
+        next(err);
     }
+
 });
 
 // Get all sites
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
+
     try {
         const sites = await Site.find().sort({
             createdAt: -1,
         });
-
         res.json(sites);
+
     } catch (err) {
-        res.status(500).json({
-            error: "Internal Server Error",
-        });
-    }
+        next(err);
+     }
 });
 
 // Delete a site
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
+
     try {
         const deleted = await Site.findByIdAndDelete(req.params.id);
 
@@ -63,11 +68,11 @@ router.delete("/:id", async (req, res) => {
             message: "Site removed",
             site: deleted,
         });
+
     } catch (err) {
-        res.status(500).json({
-            error: "Internal Server Error",
-        });
+        next(err);
     }
+
 });
 
 module.exports = router;
