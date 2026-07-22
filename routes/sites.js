@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Site = require("../models/Site");
 
+// Create a new site
 router.post("/", async (req, res) => {
     const { name, url } = req.body;
 
@@ -26,6 +27,21 @@ router.post("/", async (req, res) => {
             });
         }
 
+        res.status(500).json({
+            error: "Internal Server Error",
+        });
+    }
+});
+
+// Get all monitored sites
+router.get("/", async (req, res) => {
+    try {
+        const sites = await Site.find().sort({
+            createdAt: -1,
+        });
+
+        res.json(sites);
+    } catch (err) {
         res.status(500).json({
             error: "Internal Server Error",
         });
