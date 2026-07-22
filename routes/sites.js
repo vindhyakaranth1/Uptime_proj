@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Get all monitored sites
+// Get all sites
 router.get("/", async (req, res) => {
     try {
         const sites = await Site.find().sort({
@@ -41,6 +41,28 @@ router.get("/", async (req, res) => {
         });
 
         res.json(sites);
+    } catch (err) {
+        res.status(500).json({
+            error: "Internal Server Error",
+        });
+    }
+});
+
+// Delete a site
+router.delete("/:id", async (req, res) => {
+    try {
+        const deleted = await Site.findByIdAndDelete(req.params.id);
+
+        if (!deleted) {
+            return res.status(404).json({
+                error: "Site not found",
+            });
+        }
+
+        res.json({
+            message: "Site removed",
+            site: deleted,
+        });
     } catch (err) {
         res.status(500).json({
             error: "Internal Server Error",
