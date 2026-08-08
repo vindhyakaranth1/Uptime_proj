@@ -1,5 +1,6 @@
 const cron = require("node-cron");
 const Site = require("../models/Site");
+const Check = require("../models/Check");
 const checkSite = require("../services/checkSite");
 
 async function runChecks() {
@@ -15,6 +16,12 @@ async function runChecks() {
                 lastResponseTimeMs: result.responseTime
             });
 
+            await Check.create({
+                site: site._id,
+                status: result.status,
+                responseTime: result.responseTime
+            });
+
             console.log(
                 `Checked ${site.url}: ${result.status} (${result.responseTime}ms)`
             );
@@ -25,9 +32,9 @@ async function runChecks() {
 }
 
 function startMonitorJob() {
-    cron.schedule("*/1 * * * *", runChecks);
+    cron.schedule("*/5 * * * *", runChecks);
 
-    console.log("✅ Monitor job started — checking every 1 minute");
+    console.log("✅ Monitor job started — checking every 5 minutes");
 }
 
 module.exports = startMonitorJob;
