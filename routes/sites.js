@@ -81,3 +81,17 @@ router.get("/:id/checks", async (req, res, next) => {
 
 
 module.exports = router;
+
+<html>
+    <head>
+        <title>
+            First web page for tutedude website
+        </title>
+    </head>
+    <b>
+        <p>
+            So this is the parragprah tht tells abt thte college ,.n so far movie is being goodd like really goodd
+        </p>
+        
+    </b>
+</html>
