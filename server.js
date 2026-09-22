@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const connectDB = require("./config/db");
 const sitesRouter = require("./routes/sites");
+const startMonitorJob = require("./jobs/monitorJob");
 
 const app = express();
 
@@ -34,6 +35,8 @@ app.use((err, req, res, next) => {
 
 connectDB()
     .then(() => {
+        startMonitorJob();
+
         app.listen(process.env.PORT, () => {
             console.log(`Server running on port ${process.env.PORT}`);
         });

@@ -42,6 +42,24 @@ router.get("/", async (req, res, next) => {
 });
 
 
+// GET /api/sites/:id/checks
+router.get("/:id/checks", async (req, res, next) => {
+    try {
+        const limit = parseInt(req.query.limit) || 50;
+
+        const checks = await Check.find({
+            site: req.params.id
+        })
+            .sort({ checkedAt: -1 })
+            .limit(limit);
+
+        res.status(200).json(checks.reverse());
+    } catch (err) {
+        next(err);
+    }
+});
+
+
 // DELETE /api/sites/:id
 router.delete("/:id", async (req, res, next) => {
     try {
@@ -62,36 +80,4 @@ router.delete("/:id", async (req, res, next) => {
 });
 
 
-// GET /api/sites/:id/checks
-router.get("/:id/checks", async (req, res, next) => {
-    try {
-        const limit = parseInt(req.query.limit) || 50;
-
-        const checks = await Check.find({
-            site: req.params.id
-        })
-            .sort({ checkedAt: -1 })
-            .limit(limit);
-
-        res.status(200).json(checks.reverse());
-    } catch (err) {
-        next(err);
-    }
-});
-
-
 module.exports = router;
-
-<html>
-    <head>
-        <title>
-            First web page for tutedude website
-        </title>
-    </head>
-    <b>
-        <p>
-            So this is the parragprah tht tells abt thte college ,.n so far movie is being goodd like really goodd
-        </p>
-        
-    </b>
-</html>
