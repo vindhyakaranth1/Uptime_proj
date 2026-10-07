@@ -3,10 +3,10 @@ const Site = require("../models/Site");
 const Check = require("../models/Check");
 
 const router = express.Router();
-
+const authMiddleware = require("../middleware/auth");
 
 // POST /api/sites
-router.post("/", async (req, res, next) => {
+    router.post("/", authMiddleware, async (req, res, next) => {
     try {
         const { name, url } = req.body;
 
@@ -25,11 +25,12 @@ router.post("/", async (req, res, next) => {
 
         next(err);
     }
+
 });
 
 
 // GET /api/sites
-router.get("/", async (req, res, next) => {
+  router.get("/", authMiddleware, async (req, res, next) => {
     try {
         const sites = await Site.find().sort({
             createdAt: -1
@@ -61,7 +62,7 @@ router.get("/:id/checks", async (req, res, next) => {
 
 
 // DELETE /api/sites/:id
-router.delete("/:id", async (req, res, next) => {
+ router.delete("/", authMiddleware, async (req, res, next) => {
     try {
         const site = await Site.findByIdAndDelete(req.params.id);
 
